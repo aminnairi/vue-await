@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        <div id="app"></div>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.12/vue.min.js" integrity="sha512-BKbSR+cfyxLdMAsE0naLReFSLg8/pjbgfxHh/k/kUC82Hy7r6HtR5hLhobaln2gcTvzkyyehrdREdjpsQwy2Jw==" crossorigin="anonymous"></script>
+        <script>
+            "use strict";
+
+            window.addEventListener("load", () => {
+                if (!document.getElementById("app")) {
+                    throw new Error("Missing root element");
+                }
+
+                window.Vue.component("await", {
+                    props: {
+                        promise: {
+                            type: Promise,
+                            default: Promise.reject
+                        }
+                    },
+
+                    data() {
+                        return {
+                            state: window.Vue.observable({
+                                isPending: true,
+                                response: null,
+                                error: null
+                            })
+                        };
+                    },
+
+                    provide() {
+                        return {
+                            state: this.state
+                        };
+                    },
+
+                    template: `
+                        <div>
+                            <slot />
+                        </div>
+                    `,
+
+                    created() {
+                        this.state.isPending = true;
+
+                        this.promise().then(response => {
+                            this.state.response = response;
+                            this.state.error = null;
+                        }).catch(error => {
+                            this.state.response = null;
+                            this.state.error = error;
+                        }).finally(() => {
+                            window.setTimeout(() => {
+                                this.state.isPending = false;
+                            }, 2000);
+                        });
+
+                    }
+                });
+
+                window.Vue.component("pending", {
+                    inject: ["state"],
+
+                    template: `
+                        <div v-if="state.isPending">    
+                            <slot />
+                        </div>    
+                    `
+                });
+
+                window.Vue.component("then", {
+                    inject: ["state"],
+
+                    template: `
+                        <div v-if="!state.isPending && state.response !== null">
+                            <slot v-bind:response="state.response" />
+                        </div>
+                    `
+                });
+
+                window.Vue.component("catch", {
+                    inject: ["state"],
+
+                    template: `
+                        <div v-if="!state.isPending && state.error !== null">
+                            <slot v-bind:error="state.error" />
+                        </div>
+                    `
+                });
+
+                new window.Vue({
+                    el: "#app",
+
+                    data: {
+                        promise: () => fetch("https://jsonplaceholder.typicode.com/users").then(response => {
+                            if (!response.ok) {
+                                throw new Error("Unreachable server");
+                            }
+
+                            return response.json();
+                        })
+                    },
+
+                    template: `
+                        <div>
+                            <h1>Hello world!</h1>
+
+                            <await :promise="promise">
+                                <pending> 
+                                    <p>Fetching data from JSONPlaceholder, please wait...</p>
+                                </pending>
+
+                                <then v-slot="{response}">
+                                    <p>Promise has been fulfilled</p> 
+                                    <p>{{ JSON.stringify(response) }}</p>
+                                </then>
+
+                                <catch v-slot="{error}">
+                                    <p>There was an error attempting to fetch from JSONPlaceholder servers.</p>
+                                    <p>{{ JSON.stringify(error) }}</p>
+                                </catch>
+                            </await>
+                        </div>
+                    `
+                });
+            });
+        </script>
+    </body>
+</html>
