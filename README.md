@@ -27,18 +27,33 @@ $ npm uninstall @aminnairi/vue-await
         <h1>Users</h1>
 
         <await :promise="promise">
-            <pending> 
-                <p>Fetching users, please wait...</p>
+            <pending>
+                <p>Fetching users...</p>
             </pending>
 
             <then v-slot="{response}">
-                <p>Fetched {{ response.length }} users.</p>
-                <p>{{ JSON.stringify(response) }}</p>
+                <p>Successfully fetched users!</p>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Identifier</th>
+                            <th>Username</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr v-for="user in response">
+                            <td>{{ user.id }}</td>
+                            <td>{{ user.username }}</td>
+                        </tr>
+                    </tbody>
+                </table>
             </then>
 
             <catch v-slot="{error}">
-                <p>There was an error attempting to fetch from JSONPlaceholder servers.</p>
-                <p>{{ JSON.stringify(error) }}</p>
+                <p>Failed to fetch users.</p>
+                <p>{{ error.message }}</p>
             </catch>
         </await>
     </div>
@@ -68,6 +83,6 @@ $ npm uninstall @aminnairi/vue-await
                 }
             };
         }
-    };
+    }
 </script>
 ```
