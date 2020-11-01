@@ -4,8 +4,8 @@ Vue.js components for normalizing your API calls.
 
 ## Requirements
 
-- Git
-- NPM
+- [Git](https://git-scm.com/)
+- [NPM](https://www.npmjs.com/)
 
 ## Installation
 
