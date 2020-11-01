@@ -34,32 +34,6 @@
         },
 
         created() {
-            console.group("root");
-            console.log(this.$root);
-            console.groupEnd();
-            
-            console.group("children");
-            console.log(this.$root.$children);
-            console.groupEnd();
-
-            const childrenNames = this.$root.$children.map(child => child.name || "");
-
-            console.group("childrenNames");
-            console.log(childrenNames);
-            console.groupEnd();
-
-            if (!childrenNames.includes("Pending")) {
-                throw new Error("The <pending></pending> is missing from the <await></await> children.");
-            }
-
-            if (!childrenNames.includes("Then")) {
-                throw new Error("The <then></then> is missing from the <await></await> children.");
-            }
-
-            if (!childrenNames.includes("Catch")) {
-                throw new Error("The <catch></catch> is missing from the <await></await> children.");
-            }
-
             this.state.isPending = true;
 
             const maybePromise = this.promise();
