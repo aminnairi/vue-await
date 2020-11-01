@@ -2,12 +2,38 @@
     "name": "@aminnairi/vue-await",
     "version": "0.1.0",
     "description": "Vue.js components for normalizing your API calls.",
-    "scripts": {
-        "build": "rollup -c"
-    },
+    "homepage": "https://github.com/aminnairi/vue-await#readme",
+    "main": "dist/vue-await.js",
+    "license": "MIT",
+    "keywords": [
+        "vue",
+        "await",
+        "async",
+        "promise",
+        "then",
+        "catch",
+        "pending"
+    ],
     "files": [
         "dist/*"
     ],
+    "bugs": {
+        "url": "https://github.com/aminnairi/vue-await/issues",
+        "email": "nairi.amin@gmail.com"
+    },
+    "author": {
+        "name": "Amin NAIRI",
+        "email": "nairi.amin@gmail.com",
+        "url": "https://github.com/aminnairi"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/aminnairi/vue-await.git",
+        "directory": "."
+    },
+    "scripts": {
+        "build": "rollup -c"
+    },
     "devDependencies": {
         "@rollup/plugin-commonjs": "^16.0.0",
         "@rollup/plugin-node-resolve": "^10.0.0",
