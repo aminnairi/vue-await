@@ -12,8 +12,8 @@
 
         props: {
             promise: {
-                type: Promise,
-                default: Promise.reject
+                type: Function,
+                default: () => Promise.reject
             }
         },
 
@@ -36,6 +36,13 @@
         created() {
             this.state.isPending = true;
 
+            const maybePromise = this.promise();
+            const type = Object.prototype.toString.call(maybePromise);
+
+            if (type !== "[object Promise]") {
+                throw new TypeError("Promise must be a function that returns a promise.");
+            }
+
             this.promise().then(response => {
                 this.state.response = response;
                 this.state.error = null;
@@ -45,7 +52,6 @@
             }).finally(() => {
                 this.state.isPending = false;
             });
-
         }
     };
 </script>
